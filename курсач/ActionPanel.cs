@@ -1,15 +1,6 @@
-﻿using DocumentFormat.OpenXml.Office.CustomUI;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.Wordprocessing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using курсач.Admin;
+﻿using курсач.Admin;
 using курсач.Enities;
 using курсач.Helpers.Admin;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace курсач
 {
@@ -373,6 +364,7 @@ namespace курсач
                                 Console.WriteLine("4. Доктор Врач");
                                 Console.WriteLine("\n0. Главное меню");
                                 string doctorName = "Не выбран";
+
                                 switch (Program.Choice(0, 4))
                                 {
                                     case 1:
@@ -391,12 +383,19 @@ namespace курсач
                                         MainMenu();
                                         break;
                                 }
+
                                 Console.Clear();
-                                Console.WriteLine("Выбыерите дату:");
+                                Console.WriteLine("Выберите дату:");
                                 DateOnly date = DateOnly.Parse(Console.ReadLine()!);
-                                Console.WriteLine("Выбыерите время:");
+
+                                Console.WriteLine("Выберите время:");
                                 TimeOnly time = TimeOnly.Parse(Console.ReadLine()!);
-                                AppointmentHelper.AddAppointment(doctorName, date, time);
+
+                                Console.WriteLine("Введите Id пользователя, которому назначено посещение:");
+                                var userId = int.Parse(Console.ReadLine()!);
+
+                                AppointmentHelper.AddAppointment(doctorName, date, time, userId);
+
                                 Console.WriteLine("\n0. Главное меню");
                                 switch (Program.Choice(0, 0))
                                 {

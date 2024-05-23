@@ -1,14 +1,7 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using курсач.Admin;
+
 using курсач.Enities;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace курсач.Helpers.Admin
 {
@@ -33,7 +26,7 @@ namespace курсач.Helpers.Admin
 
         public static void ReadAppointments()
         {
-            var appointments = AppointmentHelper.GetAppointments();
+            var appointments = GetAppointments();
 
             foreach (var appointment in appointments)
             {
@@ -41,7 +34,7 @@ namespace курсач.Helpers.Admin
             }
         }
 
-        public static void AddAppointment(string doctorName, DateOnly date, TimeOnly time)
+        public static void AddAppointment(string doctorName, DateOnly date, TimeOnly time, int userId)
         {
             var appointments = GetAppointments();
 
@@ -51,6 +44,7 @@ namespace курсач.Helpers.Admin
                 DoctorName = doctorName,
                 Date = date,
                 Time = time,
+                UserId = userId
             };
 
             appointments.Add(newAppointment);
@@ -118,18 +112,22 @@ namespace курсач.Helpers.Admin
             Save(appointments);
         }
 
-        //public static void GetUserAppointments()
-        //{
-        //    var appointments = GetAppointments();
+        public static List<Appointment> GetAppointmentsByUserId(int userId)
+        {
+            var appointments = GetAppointments();
 
-        //    foreach (var appointment in appointments)
-        //    {
-        //        if (Appointment.userId == user.Id)
-        //            return appointment;
-        //    }
+            var result = new List<Appointment>();
 
-        //    return null;
-        //}
+            foreach (var appointment in appointments)
+            {
+                if (userId == appointment.UserId)
+                {
+                    result.Add(appointment);
+                }
+            }
+
+            return result;
+        }
 
         public static void RemoveAppointment(int id)
         {
