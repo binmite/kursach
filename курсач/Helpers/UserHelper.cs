@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using курсач.Admin;
 using курсач.Enities;
 
 namespace курсач.Helpers.Admin
@@ -21,46 +22,35 @@ namespace курсач.Helpers.Admin
             }
         }
 
-        public static User FindDataById(int id)
-        {
-            var users = GetUsers();
-
-            foreach (var user in users)
-            {
-                if (user.Id == id)
-                    return user;
-            }
-
-            return null;
-        }
-
-        public static User FindDataByLogin(string login)
-        {
-            var users = GetUsers();
-
-            foreach (var user in users)
-            {
-                if (user.Login == login)
-                    return user;
-            }
-
-            return null;
-        }
-
         public static void AddUser(string name, string phoneNumber) 
         {
             var users = GetUsers();
 
             var newUser = new User()
             {
-                Id = users.Max(x => x.Id) + 1,
+                UserId = users.Max(x => x.UserId) + 1,
                 FullName = name,
                 PhoneNumber = phoneNumber
             };
 
+            foreach (var user in users)
+            {
+                if (newUser.FullName == user.FullName)
+                {
+                    Console.WriteLine("Клиент с таким именем уже существует");
+                    return;
+                }
+
+                if (newUser.PhoneNumber == user.PhoneNumber)
+                {
+                    Console.WriteLine("Клиент с таким номером телефона уже существует");
+                    return;
+                }
+            }
+
             users.Add(newUser);
 
-            Console.WriteLine($"Пользователь {newUser.Login} добавлен\nID пользователя: {newUser.Id}");
+            Console.WriteLine($"Пользователь {newUser.FullName} добавлен\nID пользователя: {newUser.UserId}");
 
             Save(users);
         }
@@ -68,11 +58,11 @@ namespace курсач.Helpers.Admin
         public static void RemoveUser(int id)
         {
             var users = GetUsers();
-            var userToDelete = users.FirstOrDefault(x => x.Id == id);
+            var userToDelete = users.FirstOrDefault(x => x.UserId == id);
 
             users.Remove(userToDelete);
 
-            Console.WriteLine($"Пользователь {userToDelete.Login} удалён"); 
+            Console.WriteLine($"Пользователь {userToDelete.FullName} удалён"); 
 
             Save(users);
         }
@@ -80,10 +70,10 @@ namespace курсач.Helpers.Admin
         public static void EditUser(int id)
         {
             var users = GetUsers();
-            var userToEdit = users.FirstOrDefault(x => x.Id == id);
+            var userToEdit = users.FirstOrDefault(x => x.UserId == id);
 
             Console.WriteLine("1. Редактировать имя");
-            Console.WriteLine("2. Редактировать имя");
+            Console.WriteLine("2. Редактировать номер телефона");
             Console.WriteLine("0. Выход");
 
             switch (Program.Choice(0, 3))
@@ -93,7 +83,7 @@ namespace курсач.Helpers.Admin
                     userToEdit.FullName = Console.ReadLine()!;
                     break;
                 case 2:
-                    Console.Write("Введите новый номер телефона: ");
+                    Console.Write("Введите новый номер телефона в формате +************: ");
                     userToEdit.PhoneNumber = Console.ReadLine()!;
                     break;
                 case 0:
@@ -102,6 +92,17 @@ namespace курсач.Helpers.Admin
             }
 
             Save(users);
+        }
+
+        public static void ReadUsers()
+        {
+            var users = UserHelper.GetUsers();
+            Console.WriteLine("Список клиентов:");
+
+            foreach (var user in users)
+            {
+                Console.WriteLine($"ID: {user.UserId}\nПолное имя: {user.FullName}\nНомер телефона: {user.PhoneNumber}\n");
+            }
         }
 
         public static void Save(List<User> users)

@@ -8,11 +8,11 @@ namespace курсач.Enities
 {
     public class Appointment
     {
-        private int id;
-        public int Id
+        private int appointmentId;
+        public int AppointmentId
         {
-            get { return id; }
-            set { id = value; }
+            get { return appointmentId; }
+            set { appointmentId = value; }
         }
 
         private string doctorName;
@@ -36,17 +36,16 @@ namespace курсач.Enities
             set { time = value; }
         }
 
-        private int userId;
-        public int UserId
+        private int medicalCardId;
+        public int MedicalCardId
         {
-            get { return userId; }
-            set { userId = value; }
+            get { return medicalCardId; }
+            set { medicalCardId = value; }
         }
 
         public override string ToString()
         {
-            return $"ID = {Id}\nДоктора: {DoctorName}\nДата: {Date}\nВремя: {Time}\n";
+            return $"ID = {appointmentId}\nДоктор: {DoctorName}\nДата: {Date}\nВремя: {Time}\nID питомца к которому встреча: {MedicalCardId}\n";
         }
     }
 }
-

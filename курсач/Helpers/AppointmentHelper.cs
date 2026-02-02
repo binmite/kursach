@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
-
+using курсач.Admin;
 using курсач.Enities;
 
 namespace курсач.Helpers.Admin
@@ -27,6 +27,7 @@ namespace курсач.Helpers.Admin
         public static void ReadAppointments()
         {
             var appointments = GetAppointments();
+            Console.WriteLine("Список встреч:");
 
             foreach (var appointment in appointments)
             {
@@ -34,24 +35,22 @@ namespace курсач.Helpers.Admin
             }
         }
 
-        public static void AddAppointment(string doctorName, DateOnly date, TimeOnly time, int userId)
+        public static void AddAppointment(string doctorName, DateOnly date, TimeOnly time, int medicalCardId)
         {
             var appointments = GetAppointments();
 
             var newAppointment = new Appointment()
             {
-                Id = appointments.Last().Id + 1,
+                AppointmentId = appointments.Last().AppointmentId + 1,
                 DoctorName = doctorName,
                 Date = date,
                 Time = time,
-                UserId = userId
+                MedicalCardId = medicalCardId
             };
 
             appointments.Add(newAppointment);
 
-            Console.Clear();
-
-            Console.WriteLine($"Запись на приём к врачу {doctorName} добавлена\nID встречи: {newAppointment.Id}");
+            Console.WriteLine($"Запись на приём к врачу {doctorName} добавлена\nID встречи: {newAppointment.AppointmentId}\nID карты питомца к которому привязана встреча: {newAppointment.MedicalCardId}");
 
             Save(appointments);
         }
@@ -59,11 +58,12 @@ namespace курсач.Helpers.Admin
         public static void EditAppointment(int id)
         {
             var appointments = GetAppointments();
-            var appointmentToEdit = appointments.FirstOrDefault(x => x.Id == id);
+            var appointmentToEdit = appointments.FirstOrDefault(x => x.AppointmentId == id);
 
             Console.WriteLine("1. Выбрать другого врача");
             Console.WriteLine("2. Изменить дату");
             Console.WriteLine("3. Изменить время");
+            Console.WriteLine("4. ID карты к которой привязана встреча");
             Console.WriteLine("0. Выход");
 
             switch (Program.Choice(0, 3))
@@ -71,25 +71,25 @@ namespace курсач.Helpers.Admin
                 case 1:
                     Console.Write("Выберите другого врача: ");
                     Console.WriteLine("Выбыерите ветеринара:");
-                    Console.WriteLine("1. Доктор Браун");
-                    Console.WriteLine("2. Доктор Уэйн");
-                    Console.WriteLine("3. Доктор Кто");
-                    Console.WriteLine("4. Доктор Врач");
+                    Console.WriteLine("1. Азаронок А. В.");
+                    Console.WriteLine("2. Волков Г. Л.");
+                    Console.WriteLine("3. Иванов О. М");
+                    Console.WriteLine("4. Эдаси П. У.");
                     Console.WriteLine("\n0. Главное меню");
                     appointmentToEdit.DoctorName = "Не выбран";
                     switch (Program.Choice(0, 4))
                     {
                         case 1:
-                            appointmentToEdit.DoctorName = "Доктор Браун";
+                            appointmentToEdit.DoctorName = "Азаронок А. В.";
                             break;
                         case 2:
-                            appointmentToEdit.DoctorName = "Доктор Уэйн";
+                            appointmentToEdit.DoctorName = "Волков Г. Л.";
                             break;
                         case 3:
-                            appointmentToEdit.DoctorName = "Доктор Кто";
+                            appointmentToEdit.DoctorName = "Иванов О. М";
                             break;
                         case 4:
-                            appointmentToEdit.DoctorName = "Доктор Врач";
+                            appointmentToEdit.DoctorName = "Эдаси П. У.";
                             break;
                         case 0:
                             ActionPanel.MainMenu();
@@ -104,6 +104,12 @@ namespace курсач.Helpers.Admin
                     Console.Write("Введите новое время: ");
                     appointmentToEdit.Time = TimeOnly.Parse(Console.ReadLine()!);
                     break;
+                case 4:
+                    Console.WriteLine("Список карт:");
+                    MedicalCardHelper.ReadMedicalCards();
+                    Console.Write("Введите другой ID: ");
+                    appointmentToEdit.MedicalCardId = int.Parse(Console.ReadLine()!);
+                    break;
                 case 0:
                     ActionPanel.MainMenu();
                     break;
@@ -112,31 +118,14 @@ namespace курсач.Helpers.Admin
             Save(appointments);
         }
 
-        public static List<Appointment> GetAppointmentsByUserId(int userId)
-        {
-            var appointments = GetAppointments();
-
-            var result = new List<Appointment>();
-
-            foreach (var appointment in appointments)
-            {
-                if (userId == appointment.UserId)
-                {
-                    result.Add(appointment);
-                }
-            }
-
-            return result;
-        }
-
         public static void RemoveAppointment(int id)
         {
             var appointments = GetAppointments();
-            var appointmentToDelete = appointments.FirstOrDefault(x => x.Id == id);
+            var appointmentToDelete = appointments.FirstOrDefault(x => x.AppointmentId == id);
 
             appointments.Remove(appointmentToDelete);
 
-            Console.WriteLine($"Встреча с ID = {appointmentToDelete.Id} удалена");
+            Console.WriteLine($"Встреча с ID = {appointmentToDelete.AppointmentId} удалена");
 
             Save(appointments);
         }

@@ -1,4 +1,5 @@
-﻿using курсач.Admin;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using курсач.Admin;
 using курсач.Enities;
 using курсач.Helpers.Admin;
 
@@ -27,10 +28,10 @@ namespace курсач
                 {
                     case 1:
                         Console.Clear();
-                        Console.WriteLine("1. Просмотреть данные клиентов записей");
-                        Console.WriteLine("2. Добавить клиента запись");
+                        Console.WriteLine("1. Посмотреть данные клиентов");
+                        Console.WriteLine("2. Добавить клиента");
                         Console.WriteLine("3. Редактировать данные клиента");
-                        Console.WriteLine("4. Удалить клиента запись");
+                        Console.WriteLine("4. Удалить клиента");
 
                         Console.WriteLine("\n0. Назад");
 
@@ -38,89 +39,44 @@ namespace курсач
                         {
                             case 1:
                                 Console.Clear();
-                                var users = UserHelper.GetUsers();
-
-                                foreach (var user in users)
-                                {
-                                    Console.WriteLine($"ID: {user.Id}\nПолное имя: {user.FullName}\nНомер телефона: {user.PhoneNumber}\n");
-                                }
+                                UserHelper.ReadUsers();
 
                                 Console.WriteLine("0. Главное меню");
 
-                                switch (Program.Choice(0, 0))
-                                {
-                                    case 0:
-                                        MainMenu();
-                                        break;
-                                }
+                                Program.ReturnToMainMenu();
                                 break;
 
                             case 2:
                                 Console.Clear();
-                                Console.Write("Введите имя нового клиента: ");
-                                string name = Console.ReadLine()!;
-                                Console.Write("Введите номер телефона нового клиента: ");
+                                string name = Program.InputName();
+                                Console.Write("Введите номер телефона нового клиента в формате +375*********: ");
                                 string phoneNumber = Console.ReadLine()!;
 
                                 UserHelper.AddUser(name, phoneNumber);
 
                                 Console.WriteLine("0. Главное меню");
-
-                                switch (Program.Choice(0, 0))
-                                {
-                                    case 0:
-                                        MainMenu();
-                                        break;
-                                }
-
+                                Program.ReturnToMainMenu();
                                 break;
-
                             case 3:
                                 Console.Clear();
-                                Console.WriteLine("Список клиентов:");
-                                users = UserHelper.GetUsers();
-                                foreach (var user in users)
-                                {
-                                    Console.WriteLine($"ID: {user.Id}\nПолное имя: {user.FullName}\nНомер телефона: {user.PhoneNumber}\n");
-                                }
+                                UserHelper.ReadUsers();
 
-                                Console.Write("Введите ID клиента, которого хотите изменить: ");
-                                int id = int.Parse(Console.ReadLine()!);
+                                int id = Program.InputId();
                                 UserHelper.EditUser(id);
 
                                 Console.WriteLine("\n0. Главное меню");
-
-                                switch (Program.Choice(0, 0))
-                                {
-                                    case 0:
-                                        MainMenu();
-                                        break;
-                                }
+                                Program.ReturnToMainMenu();
                                 break;
-
                             case 4:
                                 Console.Clear();
-                                Console.WriteLine("Список клиентов:");
-                                users = UserHelper.GetUsers();
-                                foreach (var user in users)
-                                {
-                                    Console.WriteLine($"ID: {user.Id}\nПолное имя: {user.FullName}\nНомер телефона: {user.PhoneNumber}\n");
-                                }
+                                UserHelper.ReadUsers();
 
-                                Console.Write("Введите ID клиента, которого хотите удалить: ");
-                                id = int.Parse(Console.ReadLine()!);
+                                id = Program.InputId();
                                 UserHelper.RemoveUser(id);
 
                                 Console.WriteLine("\n0. Главное меню");
-
-                                switch (Program.Choice(0, 0))
-                                {
-                                    case 0:
-                                        MainMenu();
-                                        break;
-                                }
+                                Program.ReturnToMainMenu();
                                 break;
-
                             case 0:
                                 MainMenu();
                                 break;
@@ -130,7 +86,7 @@ namespace курсач
                         Console.Clear();
                         Console.WriteLine("1. Занести данные мед. карт в таблицу");
                         Console.WriteLine("2. Удалить таблицу\n");
-                        Console.WriteLine("\n0. Главное меню");
+                        Console.WriteLine("\n0. Назад");
                         switch (Program.Choice(0, 2))
                         {
                             case 1:
@@ -139,12 +95,7 @@ namespace курсач
                                 ExcelHelper<MedicalCard>.CreateExcelFile(list);
                                 Console.WriteLine("Данные занесены в таблицу");
                                 Console.WriteLine("\n0. Главное меню");
-                                switch (Program.Choice(0, 0))
-                                {
-                                    case 0:
-                                        MainMenu();
-                                        break;
-                                }
+                                Program.ReturnToMainMenu();
                                 break;
                             case 2:
                                 Console.Clear();
@@ -157,12 +108,7 @@ namespace курсач
                                 ExcelHelper<MedicalCard>.DeleteExcelFile(folderPath);
                                 
                                 Console.WriteLine("\n0. Главное меню");
-                                switch (Program.Choice(0, 0))
-                                {
-                                    case 0:
-                                        MainMenu();
-                                        break;
-                                }
+                                Program.ReturnToMainMenu();
                                 break;
                             case 0:
                                 MainMenu();
@@ -171,35 +117,28 @@ namespace курсач
                         break;
                     case 3:
                         Console.Clear();
-                        Console.WriteLine("1. Просмотреть данные мед. карт");
+                        Console.WriteLine("1. Посмотреть данные мед. карт");
                         Console.WriteLine("2. Добавить мед. карту");
                         Console.WriteLine("3. Редактировать данные мед. карты");
                         Console.WriteLine("4. Удалить мед. карту");
                         Console.WriteLine("5. Поиск мед. карт");
                         Console.WriteLine("6. Сортировка мед. карт");
 
-                        Console.WriteLine("\n0. Главное меню");
+                        Console.WriteLine("\n0. Назад");
 
-                        switch (Program.Choice(0, 7))
+                        switch (Program.Choice(0, 6))
                         {
                             case 1:
                                 Console.Clear();
                                 Console.Clear();
                                 MedicalCardHelper.ReadMedicalCards();
                                 Console.WriteLine("\n0. Главное меню");
-                                switch (Program.Choice(0, 0))
-                                {
-                                    case 0:
-                                        MainMenu();
-                                        break;
-                                }
+                                Program.ReturnToMainMenu();
                                 break;
                             case 2:
                                 Console.Clear();
-                                Console.WriteLine("Список мед. карт:");
                                 MedicalCardHelper.ReadMedicalCards();
-                                Console.Write("\nВведите имя питомца: ");
-                                string petName = Console.ReadLine()!;
+                                string petName = Program.InputName();
                                 Console.Write("\nВведите вид питомца: ");
                                 string kindOfPet = Console.ReadLine()!;
                                 Console.Write("\nВведите пол питомца: ");
@@ -215,8 +154,7 @@ namespace курсач
                                         sex = "Женский";
                                         break;
                                 }
-                                Console.Write("\nВведите возраст питомца: ");
-                                int age = int.Parse(Console.ReadLine()!);
+                                int age = Program.InputAge();
                                 Console.WriteLine("Проводились ли над питомцем хирургиеские операции: ");
                                 bool surgeries = false;
                                 Console.WriteLine("1. Да");
@@ -230,58 +168,74 @@ namespace курсач
                                         surgeries = false;
                                         break;
                                 }
-                                MedicalCardHelper.AddMedicalCard(petName, kindOfPet, age, surgeries, sex);
+
+                                Console.WriteLine("Список клиентов:");
+                                UserHelper.ReadUsers();
+
+                                Console.Write("\nВведите ID клиента к которому привязана мед. карта: ");
+                                int userId = Program.InputId();
+
+                                MedicalCardHelper.AddMedicalCard(petName, kindOfPet, age, surgeries, sex, userId);
 
                                 Console.WriteLine("\n0. Главное меню");
-                                switch (Program.Choice(0, 0))
-                                {
-                                    case 0:
-                                        MainMenu();
-                                        break;
-                                }
+                                Program.ReturnToMainMenu();
                                 break;
                             case 3:
                                 Console.Clear();
-                                Console.WriteLine("Список мед. карт:");
                                 MedicalCardHelper.ReadMedicalCards();
-                                Console.Write("Введите ID питомца, данные которого хотите изменить: ");
-                                int id = int.Parse(Console.ReadLine()!);
+                                int id = Program.InputId();
                                 MedicalCardHelper.EditMedicalCard(id);
 
                                 Console.WriteLine("\n0. Главное меню");
-                                switch (Program.Choice(0, 0))
-                                {
-                                    case 0:
-                                        MainMenu();
-                                        break;
-                                }
+                                Program.ReturnToMainMenu();
                                 break;
                             case 4:
                                 Console.Clear();
-                                Console.WriteLine("Список мед. карт:");
                                 MedicalCardHelper.ReadMedicalCards();
-                                Console.Write("Введите ID питомца, карточку которого хотите удалить: ");
-                                id = int.Parse(Console.ReadLine()!);
+                                id = Program.InputId();
                                 MedicalCardHelper.RemoveMedicalCard(id);
 
                                 Console.WriteLine("\n0. Главное меню");
-                                switch (Program.Choice(0, 0))
-                                {
-                                    case 0:
-                                        MainMenu();
-                                        break;
-                                }
+                                Program.ReturnToMainMenu();
                                 break;
                             case 5:
                                 Console.Clear();
-                                Console.WriteLine("Список мед. карт:");
                                 MedicalCardHelper.ReadMedicalCards();
-                                Console.Write("\nПоиск карты по ID\n\nВведите ID карты: ");
-                                id = int.Parse(Console.ReadLine()!);
-                                Console.WriteLine(MedicalCardHelper.FindDataById(id));
+                                Console.WriteLine("1. Поиск по ID мед. карты");
+                                Console.WriteLine("2. Поиск по ID клиента к которому привязана карта");
+                                Console.WriteLine("3. Поиск по имени питомца");
+                                Console.WriteLine("4. Поиск по возрасту питомца");
                                 Console.WriteLine("\n0. Главное меню");
-                                switch (Program.Choice(0, 0))
+                                switch (Program.Choice(0, 4)) 
                                 {
+                                    case 1:
+                                        id = Program.InputId();
+                                        Console.Clear();
+                                        Console.WriteLine(MedicalCardHelper.FindDataById(id));
+                                        Console.WriteLine("\n0. Главное меню");
+                                        Program.ReturnToMainMenu();
+                                        break;
+                                    case 2:
+                                        id = Program.InputId();
+                                        Console.Clear();
+                                        Console.WriteLine(MedicalCardHelper.FindDataById(id));
+                                        Console.WriteLine("\n0. Главное меню");
+                                        Program.ReturnToMainMenu();
+                                        break;
+                                    case 3:
+                                        petName = Program.InputName();
+                                        Console.Clear();
+                                        Console.WriteLine(MedicalCardHelper.FindDataByPetName(petName));
+                                        Console.WriteLine("\n0. Главное меню");
+                                        Program.ReturnToMainMenu();
+                                        break;
+                                    case 4:
+                                        age = Program.InputAge();
+                                        Console.Clear();
+                                        Console.WriteLine(MedicalCardHelper.FindDataByPetAge(age));
+                                        Console.WriteLine("\n0. Главное меню");
+                                        Program.ReturnToMainMenu();
+                                        break;
                                     case 0:
                                         MainMenu();
                                         break;
@@ -295,7 +249,6 @@ namespace курсач
                                 switch (Program.Choice(0, 2))
                                 {
                                     case 1:
-                                        Console.Clear();
                                         var cards = MedicalCardHelper.GetMedicalCards();
                                         cards.Sort(new SortByName());
                                         foreach (var card in cards)
@@ -303,15 +256,9 @@ namespace курсач
                                             Console.WriteLine(card);
                                         }
                                         Console.WriteLine("\n0. Главное меню");
-                                        switch (Program.Choice(0, 0))
-                                        {
-                                            case 0:
-                                                MainMenu();
-                                                break;
-                                        }
+                                        Program.ReturnToMainMenu();
                                         break;
                                     case 2:
-                                        Console.Clear();
                                         cards = MedicalCardHelper.GetMedicalCards();
                                         cards.Sort(new SortByAge());
                                         foreach (var card in cards)
@@ -319,12 +266,7 @@ namespace курсач
                                             Console.WriteLine(card);
                                         }
                                         Console.WriteLine("\n0. Главное меню");
-                                        switch (Program.Choice(0, 0))
-                                        {
-                                            case 0:
-                                                MainMenu();
-                                                break;
-                                        }
+                                        Program.ReturnToMainMenu();
                                         break;
                                 }
                                 break;
@@ -340,7 +282,7 @@ namespace курсач
                         Console.WriteLine("3. Редактировать запись к врачу");
                         Console.WriteLine("4. Удалить запись к врачу");
                         
-                        Console.WriteLine("\n0. Главное меню");
+                        Console.WriteLine("\n0. Назад");
 
                         switch (Program.Choice(0, 4))
                         {
@@ -348,102 +290,74 @@ namespace курсач
                                 Console.Clear();
                                 AppointmentHelper.ReadAppointments();
                                 Console.WriteLine("\n0. Главное меню");
-                                switch (Program.Choice(0, 0))
-                                {
-                                    case 0:
-                                        MainMenu();
-                                        break;
-                                }
+                                Program.ReturnToMainMenu();
                                 break;
                             case 2:
                                 Console.Clear();
+                                MedicalCardHelper.ReadMedicalCards();
+                                Console.WriteLine("Введите ID карты к котороой привязано посещение:");
+                                var userId = Program.InputId();
+
                                 Console.WriteLine("Выбыерите ветеринара:");
-                                Console.WriteLine("1. Доктор Браун");
-                                Console.WriteLine("2. Доктор Уэйн");
-                                Console.WriteLine("3. Доктор Кто");
-                                Console.WriteLine("4. Доктор Врач");
+                                Console.WriteLine("1. Азаронок А. В.");
+                                Console.WriteLine("2. Волков Г. Л.");
+                                Console.WriteLine("3. Иванов О. М");
+                                Console.WriteLine("4. Эдаси П. У.");
                                 Console.WriteLine("\n0. Главное меню");
                                 string doctorName = "Не выбран";
 
                                 switch (Program.Choice(0, 4))
                                 {
                                     case 1:
-                                        doctorName = "Доктор Браун";
+                                        doctorName = "Азаронок А. В.";
                                         break;
                                     case 2:
-                                        doctorName = "Доктор Уэйн";
+                                        doctorName = "Волков Г. Л.";
                                         break;
                                     case 3:
-                                        doctorName = "Доктор Кто";
+                                        doctorName = "Иванов О. М";
                                         break;
                                     case 4:
-                                        doctorName = "Доктор Врач";
+                                        doctorName = "Эдаси П. У.";
                                         break;
                                     case 0:
                                         MainMenu();
                                         break;
                                 }
 
-                                Console.Clear();
                                 Console.WriteLine("Выберите дату:");
                                 DateOnly date = DateOnly.Parse(Console.ReadLine()!);
 
                                 Console.WriteLine("Выберите время:");
                                 TimeOnly time = TimeOnly.Parse(Console.ReadLine()!);
 
-                                Console.WriteLine("Введите Id пользователя, которому назначено посещение:");
-                                var userId = int.Parse(Console.ReadLine()!);
-
                                 AppointmentHelper.AddAppointment(doctorName, date, time, userId);
 
                                 Console.WriteLine("\n0. Главное меню");
-                                switch (Program.Choice(0, 0))
-                                {
-                                    case 0:
-                                        MainMenu();
-                                        break;
-                                }
+                                Program.ReturnToMainMenu();
                                 break;
                             case 3:
                                 Console.Clear();
-                                Console.Write("Список встреч:\n");
                                 AppointmentHelper.ReadAppointments();
-                                Console.Write("\nВведите ID встречи, которую хотите изменить: ");
-                                int id = int.Parse(Console.ReadLine()!);
+                                int id = Program.InputId();
                                 AppointmentHelper.EditAppointment(id);
 
                                 Console.WriteLine("\n0. Главное меню");
-                                switch (Program.Choice(0, 0))
-                                {
-                                    case 0:
-                                        MainMenu();
-                                        break;
-                                }
+                                Program.ReturnToMainMenu();
                                 break;
                             case 4:
                                 Console.Clear();
-                                Console.WriteLine("Список встреч:");
                                 AppointmentHelper.ReadAppointments();
-                                Console.Write("Введите ID встречи, которую хотите удалить: ");
-                                id = int.Parse(Console.ReadLine()!);
+                                id = Program.InputId();
                                 AppointmentHelper.RemoveAppointment(id);
 
                                 Console.WriteLine("\n0. Главное меню");
-                                switch (Program.Choice(0, 0))
-                                {
-                                    case 0:
-                                        MainMenu();
-                                        break;
-                                }
+                                Program.ReturnToMainMenu();
+                                break;
+                            case 0:
+                                MainMenu();
                                 break;
                         }
-
-
-
-
-
-
-
                         break;
                     default:
                         break;

@@ -1,7 +1,9 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using System.Text;
 using System.Text.Json;
 using курсач.Enities;
+using курсач.Helpers.Admin;
 
 namespace курсач.Admin
 {
@@ -30,32 +32,72 @@ namespace курсач.Admin
 
             foreach (var medicalCard in medicalCards)
             {
-                if (medicalCard.Id == id)
+                if (medicalCard.MedicalCardId == id)
+                {
+                    return medicalCard;
+                }
+            }
+
+            throw new InvalidOperationException($"Медицинская карта с ID = {id} не существует.");
+        }
+
+        public static MedicalCard FindDataByUserId(int id)
+        {
+            var medicalCards = GetMedicalCards();
+
+            foreach (var medicalCard in medicalCards)
+            {
+                if (medicalCard.UserId == id)
                     return medicalCard;
             }
 
-            return null;
+            throw new InvalidOperationException($"Пользователя с ID = {id} не существует.");
         }
 
-        public static void AddMedicalCard(string petName, string kindOfPet, int age, bool surgeries, string sex) 
+        public static MedicalCard FindDataByPetName(string petName)
+        {
+            var medicalCards = GetMedicalCards();
+
+            foreach (var medicalCard in medicalCards)
+            {
+                if (medicalCard.PetName == petName)
+                    return medicalCard;
+            }
+
+            throw new InvalidOperationException($"Питомец с таким именем не найден");
+        }
+
+        public static MedicalCard FindDataByPetAge(int age)
+        {
+            var medicalCards = GetMedicalCards();
+
+            foreach (var medicalCard in medicalCards)
+            {
+                if (medicalCard.Age == age)
+                    Console.WriteLine($"{medicalCard}");
+            }
+
+            throw new InvalidOperationException($"Питомец с таким возрастом не найден");
+        }
+
+        public static void AddMedicalCard(string petName, string kindOfPet, int age, bool surgeries, string sex, int userId) 
         {
             var medicalCards = GetMedicalCards();
 
             var newMedicalCard = new MedicalCard()
             {
-                Id = medicalCards.Last().Id + 1,
+                MedicalCardId = medicalCards.Last().MedicalCardId + 1,
                 Age = age,
                 PetName = petName,
                 KindOfPet = kindOfPet,
                 Sex = sex,
-                HasSurgeries = surgeries
+                HasSurgeries = surgeries,
+                UserId = userId
             };
             
             medicalCards.Add(newMedicalCard);
 
-            Console.Clear();
-
-            Console.WriteLine($"Медицинская карта животного {petName} добавлена\nID животного: {newMedicalCard.Id}");
+            Console.WriteLine($"Медицинская карта животного {petName} добавлена\nID животного: {newMedicalCard.MedicalCardId}");
 
             Save(medicalCards);
         }
@@ -63,11 +105,11 @@ namespace курсач.Admin
         public static void RemoveMedicalCard(int id)
         {
             var medicalCards = GetMedicalCards();
-            var medicalCardToDelete = medicalCards.FirstOrDefault(x => x.Id == id);
+            var medicalCardToDelete = medicalCards.FirstOrDefault(x => x.MedicalCardId == id);
 
             medicalCards.Remove(medicalCardToDelete);
 
-            Console.WriteLine($"Карта с ID = {medicalCardToDelete.Id} удалена");
+            Console.WriteLine($"Карта с ID = {medicalCardToDelete.MedicalCardId} удалена");
 
             Save(medicalCards);
         }
@@ -75,16 +117,17 @@ namespace курсач.Admin
         public static void EditMedicalCard(int id) 
         {
             var medicalCards = GetMedicalCards();
-            var medicalCardToEdit = medicalCards.FirstOrDefault(x => x.Id == id);
+            var medicalCardToEdit = medicalCards.FirstOrDefault(x => x.MedicalCardId == id);
 
             Console.WriteLine("1. Редактировать имя");
             Console.WriteLine("2. Редактировать возраст");
             Console.WriteLine("3. Редактировать вид питомца");
             Console.WriteLine("4. Редактировать пол питомца");
             Console.WriteLine("5. Были ли проведены хирургические операции");
+            Console.WriteLine("6. Изменить ID пользователя к которому привязана мед. карта");
             Console.WriteLine("0. Выход");
 
-            switch (Program.Choice(0, 5))
+            switch (Program.Choice(0, 6))
             {
                 case 1:
                     Console.Write("Измените имя: ");
@@ -92,7 +135,7 @@ namespace курсач.Admin
                     break;
                 case 2:
                     Console.Write("Измените возраст: ");
-                    medicalCardToEdit.Age = int.Parse(Console.ReadLine()!);
+                    medicalCardToEdit.Age = Program.InputAge(); ;
                     break;
                 case 3:
                     Console.Write("Измените вид питомца: ");
@@ -126,6 +169,18 @@ namespace курсач.Admin
                             break;
                     }
                     break;
+                case 6:
+                    Console.Clear();
+                    Console.WriteLine("Список клиентов:");
+                    var users = UserHelper.GetUsers();
+                    foreach (var user in users)
+                    {
+                        Console.WriteLine($"ID: {user.UserId}\nПолное имя: {user.FullName}\nНомер телефона: {user.PhoneNumber}\n");
+                    }
+
+                    Console.Write("Введите другой ID: ");
+                    medicalCardToEdit.UserId = int.Parse(Console.ReadLine()!);
+                    break;
                 case 0:
                     ActionPanel.MainMenu(); 
                     break;
@@ -137,6 +192,7 @@ namespace курсач.Admin
         public static void ReadMedicalCards()
         {
             var cards = MedicalCardHelper.GetMedicalCards();
+            Console.WriteLine("Список карт:");
 
             foreach (var card in cards)
             {

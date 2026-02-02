@@ -2,11 +2,11 @@
 {
     public class MedicalCard
     {
-        private int id;
-        public int Id
+        private int medicalCardId;
+        public int MedicalCardId
         {
-            get { return id; }
-            set { id = value; }
+            get { return medicalCardId; }
+            set { medicalCardId = value; }
         }
 
         private string petName;
@@ -44,9 +44,16 @@
             set { hasSurgeries = value; }
         }
 
+        private int userId;
+        public int UserId
+        {
+            get { return userId; }
+            set { userId = value; }
+        }
+
         public override string ToString()
         {
-            return $"ID = {Id}\nИмя: {PetName}\nВозраст: {Age}\nВид питомца: {KindOfPet}\nПол питомца: {Sex}\nПроводились ли хирургические операции: {HasSurgeries}\n";
+            return $"ID = {MedicalCardId}\nИмя: {PetName}\nВозраст: {Age}\nВид питомца: {KindOfPet}\nПол питомца: {Sex}\nПроводились ли хирургические операции: {HasSurgeries}\nID клиента к которому привязана мед. карта: {UserId}\n";
         }
     }
 

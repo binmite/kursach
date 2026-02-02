@@ -8,11 +8,11 @@ namespace курсач.Enities
 {
     public class User
     {
-        private int id;
-        public int Id
+        private int userId;
+        public int UserId
         {
-            get { return id; }
-            set { id = value; }
+            get { return userId; }
+            set { userId = value; }
         }
 
         private string phoneNumber;
@@ -28,27 +28,6 @@ namespace курсач.Enities
             get { return fullName; }
             set { fullName = value; }
         }
-
-        private string login;
-        public string Login
-        {
-            get { return login; }
-            set { login = value; }
-        }
-
-        private string password;
-        public string Password
-        {
-            get { return password; }
-            set { password = value; }
-        }
-
-        private List<Appointment> appointments;
-        public List<Appointment> Appointments
-        {
-            get { return appointments; }
-            set { appointments = value; }
-        }
     }
     public class SortUserByName : IComparer<User>
     {
@@ -57,13 +36,4 @@ namespace курсач.Enities
             return o1.FullName.CompareTo(o2.FullName);
         }
     }
-
-    public class SortByLogin : IComparer<User>
-    {
-        public int Compare(User o1, User o2)
-        {
-            return o1.Login.CompareTo(o2.Login);
-        }
-    }
-
 }
